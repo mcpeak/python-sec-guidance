@@ -1,16 +1,13 @@
 Subprocess Shell Injection
 ==========================
 
-| Many common tasks involve interacting with the operating system - we
-| write a lot of code that configures, modifies, or otherwise controls
-  the
-| system, and there are a number of pitfalls that can come along with
-| that.
+Many common tasks involve interacting with the operating system - we write a
+lot of code that configures, modifies, or otherwise controls the system, and
+there are a number of pitfalls that can come along with that.
 
-| Shelling out to another program is a pretty common thing to want to
-  do.
-| In most cases, you will want to pass parameters to this other program.
-| Here is a simple function for pinging another server.
+Shelling out to another program is a pretty common thing to want to do. In most
+cases, you will want to pass parameters to this other program. Here is a simple
+function for pinging another server.
 
 Incorrect
 ~~~~~~~~~
@@ -23,13 +20,13 @@ Incorrect
     >>> ping('8.8.8.8')
     64 bytes from 8.8.8.8: icmp_seq=1 ttl=58 time=5.82 ms
 
-| This program just supplies a string as a command to the shell, which
-| runs it without thinking too hard about it. There's no semantic
-| separation between the input parameters, i.e. the shell cannot tell
-| where the command is supposed to end, and where the parameters start.
+This program just supplies a string as a command to the shell, which runs it
+without thinking too hard about it. There's no semantic separation between the
+input parameters, i.e. the shell cannot tell where the command is supposed to
+end, and where the parameters start.
 
-| If the ``myserver`` parameter is user controlled, this can be used to
-| execute arbitary programs, such as rm:
+If the ``myserver`` parameter is user controlled, this can be used to execute
+arbitrary programs, such as rm:
 
 .. code:: python
 
@@ -42,8 +39,8 @@ Incorrect
     rm: cannot remove `/bin/cgroups-umount': Permission denied
     ...
 
-| If you choose to test this, we recommend that you pick a command that
-| is less destructive than 'rm -rf /', such as 'touch helloworld.txt'.
+If you choose to test this, we recommend that you pick a command that is less
+destructive than 'rm -rf /', such as 'touch helloworld.txt'.
 
 Correct
 ~~~~~~~
@@ -56,25 +53,22 @@ This function can be re-written safely:
         args = ['ping', '-c', '1', myserver]
         return subprocess.check_output(args, shell=False)
 
-| Rather than passing a string to subprocess, our function passes a list
-| of strings. The ping program gets each argument separately (even if
-  the
-| argument has a space in it), so the shell does not process other
-| commands that are provided by the user after the ping command
-| terminates. You do not have to explicitly set shell=False - it is the
-| default.
+Rather than passing a string to subprocess, our function passes a list of
+strings. The ping program gets each argument separately (even if the argument
+has a space in it), so the shell does not process other commands that are
+provided by the user after the ping command terminates. You do not have to
+explicitly set shell=False - it is the default.
 
-| If we test this with the same input as before, the ping command
-| interprets the ``myserver`` value correctly as a single argument, and
-| complains because that is a really weird hostname to try and ping.
+If we test this with the same input as before, the ping command interprets the
+``myserver`` value correctly as a single argument, and complains because that
+is a really weird hostname to try and ping.
 
 .. code:: python
 
     >>> ping('8.8.8.8; rm -rf /')
     ping: unknown host 8.8.8.8; rm -rf /
 
-| This program is now much safer, even if it has to allow user-provided
-| input.
+This program is now much safer, even if it has to allow user-provided input.
 
 Consequences
 ~~~~~~~~~~~~

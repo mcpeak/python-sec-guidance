@@ -1,17 +1,14 @@
 Use oslo rootwrap securely
 ==========================
 
-| Rootwrap provides a mechanism in which a caller may execute a command
-| line with escalated privileges (typically as root). Special care must
-| be taken to ensure this use of code does not permit a lesser
-  privileged
-| user to run commands as root.
+Rootwrap provides a mechanism in which a caller may execute a command line with
+escalated privileges (typically as root). Special care must be taken to ensure
+this use of code does not permit a lesser privileged user to run commands as
+root.
 
-| Rootwrap provides a series of filters to restrict command usage to
-  limit
-| the exposure. The most commonly used filter is CommandFilter, but it
-| also provides the least amount of restriction on how the command is
-| called.
+Rootwrap provides a series of filters to restrict command usage to limit the
+exposure. The most commonly used filter is CommandFilter, but it also provides
+the least amount of restriction on how the command is called.
 
 Consider the following before using rootwrap:
 
@@ -33,9 +30,8 @@ And example of insecure usage:
     # nova/virt/disk/vfs/localfs.py: 'chmod'
     chmod: CommandFilter, chmod, root
 
-| This filter is too permissive because it allows the chmod command to
-  be
-| run as root with any number of arguments, on any file.
+This filter is too permissive because it allows the chmod command to be run as
+root with any number of arguments, on any file.
 
 Correct
 ~~~~~~~
@@ -51,9 +47,8 @@ An example of more secure usage:
 Consequences
 ~~~~~~~~~~~~
 
--  A user of the API could potentially inject input that might be
-   executed at high privileges due to an in-effective rootwrap
-   configuration.
+-  A user of the API could potentially inject input that might be executed at
+   high privileges due to an in-effective rootwrap configuration.
 
 References
 ~~~~~~~~~~

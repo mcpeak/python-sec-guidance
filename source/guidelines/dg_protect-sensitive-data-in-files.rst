@@ -1,25 +1,20 @@
 Protect sensitive data in config files from disclosure
 ======================================================
 
-| It is preferable to avoid storing sensitive information in
-  configuration
-| files, but there are occasions where this is unavoidable. For those
-| situations, oslo.config provides a useful mechanism by which those
-| sensitive pieces of information can be sanitized and protected.
+It is preferable to avoid storing sensitive information in configuration files,
+but there are occasions where this is unavoidable. For those situations,
+oslo.config provides a useful mechanism by which those sensitive pieces of
+information can be sanitized and protected.
 
-| In order to trigger this santization, a 'secret=True' flag must be
-  added
-| to the 'cfg.StrOpt()' function when registering the oslo
-  configuration.
-| An example of this practice is provided below.
+In order to trigger this santization, a 'secret=True' flag must be added to the
+'cfg.StrOpt()' function when registering the oslo configuration.
+
+An example of this practice is provided below.
 
 Incorrect
 ~~~~~~~~~
 
-| In the example below the password 'secrets!' will be loaded through
-  the
-| cfg.StrOpt() function that could otherwise be logged and disclosed to
-| anyone with access to the log file (legitimate or not).
+In the example below the password 'secrets!' will be loaded through the cfg.StrOpt() function that could otherwise be logged and disclosed to anyone with access to the log file (legitimate or not).
 
 .. code:: python
 
@@ -40,11 +35,9 @@ A correct code example:
 Consequences
 ~~~~~~~~~~~~
 
-| If sensitive information is logged without being marked as secret,
-  that
-| sensitive information would be exposed whenever the logger debug flag
-  is
-| activated.
+If sensitive information is logged without being marked as secret, that
+sensitive information would be exposed whenever the logger debug flag is
+activated.
 
 Example Log Entries
 ~~~~~~~~~~~~~~~~~~~

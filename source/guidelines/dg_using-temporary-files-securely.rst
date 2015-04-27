@@ -1,66 +1,55 @@
 Create, use, and remove temporary files securely
 ================================================
 
-| Often we want to create temporary files to save data that we can't
-  hold
-| in memory or to pass to external programs that must read from a file.
-| The obvious way to do this is to generate a unique file name in a
-  common
-| system temporary directory such as /tmp, but doing so correctly is
-  harder
-| than it seems. Safely creating a temporary file or directory means
-  following
-| a number of rules (see the references for more details). We should
-  never do
-| this ourselves but use the correct existing library function. We also
-| must take care to cleanup our temporary files even in the face of
-  errors.
+Often we want to create temporary files to save data that we can't hold in
+memory or to pass to external programs that must read from a file. The obvious
+way to do this is to generate a unique file name in a common system temporary
+directory such as /tmp, but doing so correctly is harder than it seems. Safely
+creating a temporary file or directory means following a number of rules (see
+the references for more details). We should never do this ourselves but use the
+correct existing library function. We also must take care to cleanup our
+temporary files even in the face of errors.
 
-| If we don't take all these precautions we open ourselves up to a
-  number
-| of dangerous security problems. Malicious users that can predict the
-| file name and write to directory containing the temporary file can
-| effectively hijack the temporary file by creating a symlink with the
-| name of the temporary file before the program creates the file itself.
-| This allows a malicious user to supply malicious data or cause actions
-| by the program to affect attacker chosen files. The references
-| have more extensive descriptions of potential dangers.
+If we don't take all these precautions we open ourselves up to a number of
+dangerous security problems. Malicious users that can predict the file name and
+write to directory containing the temporary file can effectively hijack the
+temporary file by creating a symlink with the name of the temporary file before
+the program creates the file itself. This allows a malicious user to supply
+malicious data or cause actions by the program to affect attacker chosen files.
+The references have more extensive descriptions of potential dangers.
 
-| Most programming lanuages provide functions to create temporary
-| files. However, some of these functions are unsafe and should not
-| be used. We need to be careful to use the safe functions.
+Most programming lanuages provide functions to create temporary files. However,
+some of these functions are unsafe and should not be used. We need to be
+careful to use the safe functions.
 
-| Despite the safer temporary file creation APIs we must still be
-| aware of where we are creating tempory files. Generally, temporary
-| files should always be created on the local filesystem. Many
-| remote filesystems (for example, NFSv2) do not support the open
-| flags needed to safely create tempoary files.
+Despite the safer temporary file creation APIs we must still be aware of where
+we are creating tempory files. Generally, temporary files should always be
+created on the local filesystem. Many remote filesystems (for example, NFSv2)
+do not support the open flags needed to safely create temporary files.
 
 Python
 ~~~~~~
 
-| Use \| Avoid
-| ----- \| -----
-| tempfile.TemporaryFile \| tempfile.mktemp
-| tempfile.NamedTemporaryFile \| open
-| tempfile.SpooledTemporaryFile \|
-| tempfile.mkstemp \|
-| tempfile.mkdtemp \|
+=========================== ===============
+Use                         Avoid
+=========================== ===============
+tempfile.TemporaryFile      tempfile.mktemp
+tempfile.NamedTemporaryFile open
+tempfile.SpoolTemporaryFile
+tempfile.mkstemp
+tempfile.mkdtemp
+=========================== ===============
 
-| tempfile.TemporaryFile should be used whenever possible. Besides
-| creating temporary files safely it also hides the file and cleans up
-  the
-| file automatically.
+tempfile.TemporaryFile should be used whenever possible. Besides creating
+temporary files safely it also hides the file and cleans up the file
+automatically.
 
 Incorrect
 ~~~~~~~~~
 
-| Creating temporary files with predictable paths leaves them open to
-  time
-| of check, time of use attacks (TOCTOU). Given the following code
-  snippet
-| an attacker might pre-emptively place a file at the specified
-  location.
+Creating temporary files with predictable paths leaves them open to time of
+check, time of use attacks (TOCTOU). Given the following code snippet an
+attacker might pre-emptively place a file at the specified location.
 
 .. code:: python
 
@@ -73,9 +62,8 @@ Incorrect
         with open(tmp, "w") file:
             file.write("defaults")
 
-| There is also an insecure method within the Python standard library
-  that
-| cannot be used in a secure way to create temporary file creation.
+There is also an insecure method within the Python standard library that cannot
+be used in a secure way to create temporary file creation.
 
 .. code:: python
 
@@ -84,8 +72,8 @@ Incorrect
 
     open(tempfile.mktemp(), "w")
 
-| Finally there are many ways we could try to create a secure filename
-| that will not be secure and is easily predictable.
+Finally there are many ways we could try to create a secure filename that will
+not be secure and is easily predictable.
 
 .. code:: python
 
@@ -96,9 +84,9 @@ Incorrect
 Correct
 ~~~~~~~
 
-| The Python standard library provides a number of secure ways to create
-| temporary files and directories. The following are examples of how you
-| can use them.
+The Python standard library provides a number of secure ways to create
+temporary files and directories. The following are examples of how you can use
+them.
 
 Creating files:
 
@@ -131,12 +119,9 @@ Creating files:
     finally:
         os.remove(path)
 
-| We can also safely create a temporary directory and create temporary
-  files
-| inside it. We need to set the umask before creating the
-| file to ensure the permissions on the file only allow the creator read
-  and
-| write access.
+We can also safely create a temporary directory and create temporary files
+inside it. We need to set the umask before creating the file to ensure the
+permissions on the file only allow the creator read and write access.
 
 .. code:: python
 

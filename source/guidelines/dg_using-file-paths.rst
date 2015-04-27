@@ -1,23 +1,19 @@
 Path Traversal
 ==============
 
-| Often we will refer to a file on disk or other resource using a path.
-  A
-| path traversal attack is when an attacker supplies input that gets
-  used
-| with our path to access a file on the file system that we did not
-| intend. The input usually attempts to break out of the application's
-| working directory and access a file elsewhere on the file system. This
-| category of attack can be mitigated by restricting the scope of file
-| system access and reducing attack surface by using a restricted file
-| permission profile.
+Often we will refer to a file on disk or other resource using a path. A path
+traversal attack is when an attacker supplies input that gets used with our
+path to access a file on the file system that we did not intend. The input
+usually attempts to break out of the application's working directory and access
+a file elsewhere on the file system. This category of attack can be mitigated
+by restricting the scope of file system access and reducing attack surface by
+using a restricted file permission profile.
 
 Incorrect
 ~~~~~~~~~
 
-| A typical remote vector for path traversal in web applications might
-| involve serving or storing files on the file system. Consider the
-| following example:
+A typical remote vector for path traversal in web applications might involve
+serving or storing files on the file system. Consider the following example:
 
 .. code:: python
 
@@ -38,21 +34,19 @@ Incorrect
     if __name__ == '__main__':
         app.run(debug=True)
 
-| As the attacker controls the input that is used directly in
-  constructing
-| a path they are able to access any file on the system. For example
-| consider what happens if an attacker makes a request like:
+As the attacker controls the input that is used directly in constructing a path
+they are able to access any file on the system. For example consider what
+happens if an attacker makes a request like:
 
 ::
 
     curl http://example.com/?image_name=../../../../../../../../etc/passwd
 
-| Path traversal flaws also can happen when unpacking a compressed
-  archive
-| of files. An example of where this has happened within OpenStack is
-| `OSSA-2011-001 <http://security.openstack.org/ossa/OSSA-2011-001.html>`__.
-| In this case a tar file from an untrusted source could be unpacked to
-| overwrite files on the host operating system.
+Path traversal flaws also can happen when unpacking a compressed archive of
+files. An example of where this has happened within OpenStack is
+`OSSA-2011-001 <http://security.openstack.org/ossa/OSSA-2011-001.html>`__. In
+this case a tar file from an untrusted source could be unpacked to overwrite
+files on the host operating system.
 
 .. code:: python
 
@@ -69,9 +63,9 @@ Incorrect
 Correct
 ~~~~~~~
 
-| The following example demonstrates how you can use python code to
-| restrict access to files within a specific directory. This can be used
-| as a mechanism to defeat path traversal.
+The following example demonstrates how you can use python code to restrict
+access to files within a specific directory. This can be used as a mechanism to
+defeat path traversal.
 
 .. code:: python
 
@@ -96,11 +90,10 @@ Correct
     if __name__ == "__main__":
         main(sys.argv[1:])
 
-| Another approach to restricting file system access to maintain an
-| indirect mapping between a unique identifier and a file path that
-  exists
-| on the operating system. This prevents users supplying malicious input
-| to access unintended files.
+Another approach to restricting file system access to maintain an indirect
+mapping between a unique identifier and a file path that exists on the
+operating system. This prevents users supplying malicious input to access
+unintended files.
 
 .. code:: python
 
@@ -117,10 +110,9 @@ Correct
 Consequences
 ~~~~~~~~~~~~
 
-| Not validating file paths allows the attacker to read or write to any
-| file that the application has access to. This can lead to information
-| leakage and can be used to pivot to other more serious attacks like
-| remote code execution.
+Not validating file paths allows the attacker to read or write to any file
+that the application has access to. This can lead to information leakage and
+can be used to pivot to other more serious attacks like remote code execution.
 
 -  `OSSA-2011-001 <http://security.openstack.org/ossa/OSSA-2011-001.html>`__
 -  `OSSA-2014-041 <http://security.openstack.org/ossa/OSSA-2014-041.html>`__
